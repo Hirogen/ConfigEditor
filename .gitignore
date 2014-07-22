@@ -34,3 +34,20 @@ Icon
 # Files that might appear on external disk
 .Spotlight-V100
 .Trashes
+
+*.exe
+ConfigEditor/bin/Debug/ConfigEditor.exe.config
+ConfigEditor/bin/Debug/ConfigEditor.pdb
+ConfigEditor/bin/Debug/ConfigEditor.vshost.exe.config
+ConfigEditor/bin/Debug/ConfigEditor.vshost.exe.manifest
+ConfigEditor/obj/Debug/ConfigEditor.csproj.FileListAbsolute.txt
+ConfigEditor/obj/Debug/ConfigEditor.csproj.GenerateResource.Cache
+ConfigEditor/obj/Debug/ConfigEditor.csprojResolveAssemblyReference.cache
+ConfigEditor/obj/Debug/ConfigEditor.MainWindow.resources
+ConfigEditor/obj/Debug/ConfigEditor.pdb
+ConfigEditor/obj/Debug/ConfigEditor.Properties.Resources.resources
+ConfigEditor/obj/Debug/DesignTimeResolveAssemblyReferences.cache
+ConfigEditor/obj/Debug/DesignTimeResolveAssemblyReferencesInput.cache
+ConfigEditor/obj/Debug/TemporaryGeneratedFile_036C0B5B-1481-4323-8D20-8F5ADCB23D92.cs
+ConfigEditor/obj/Debug/TemporaryGeneratedFile_5937a670-0e60-4077-877b-f7221da3dda1.cs
+ConfigEditor/obj/Debug/TemporaryGeneratedFile_E7A71F73-0F8D-4B9B-B56E-8E70B10BC5D3.cs

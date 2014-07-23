@@ -11,7 +11,6 @@ namespace ConfigEditor
 {
     class xmlDocument
     {
-
         private Stream stream = null;
         public xmlDocument()
         {
@@ -37,6 +36,7 @@ namespace ConfigEditor
                         //Console.WriteLine("Anzahl: " + xmlNodeItemAlpha.ChildNodes.Count);
                         richTextBoxLog.AppendText("Anzahl: " + xmlNodeItemAlpha.ChildNodes.Count + "\n");
                         richTextBoxLog.AppendText("---------------------------------------------------\n");
+                        //initial 
                         xmlnodes(xmlNodeItemAlpha, ref richTextBoxLog);
                     }
                 }
@@ -59,22 +59,21 @@ namespace ConfigEditor
             //XmlNode xmln;
             foreach (XmlNode xmlNodeItemBeta in xmlNodeItemAlpha)
             {
-                //TODO comments are needed later on, need to read them when writing stuff back to the xml
+                //TODO XML-comments are needed later on, need to read them when writing stuff back to the xml
                 if (!(xmlNodeItemBeta.NodeType == XmlNodeType.Comment))
                 {
                     //Node Name ausgeben
-                    //Console.WriteLine("Name:" + xmlNodeItemBeta.Name); // Generieren des GruppenBereiches
+                    //TODO Generieren des GruppenBereiches
                     rtx.AppendText("---------------------------------------------------\n");
                     rtx.AppendText("Name:" + xmlNodeItemBeta.Name + "\n");
                     if (xmlNodeItemBeta.Attributes != null && xmlNodeItemBeta.Attributes.Count > 0)
                     {
                         xmlac = xmlNodeItemBeta.Attributes;
+                        rtx.AppendText("\nAnzahl Attribute: " + xmlNodeItemBeta.Attributes.Count + "\n");
                         foreach (XmlAttribute xmlAttributAlpha in xmlac)
                         {
                             //Attribut zeugs ausgeben
-                            //Attributname => Label, Attribut Value => Textbox + Inhalt
-                            //Console.WriteLine("\tAttributname: " + xmlAttributAlpha.Name + "\tValue:" + xmlAttributAlpha.Value);
-                            rtx.AppendText("---------------------------------------------------\n");
+                            //TODO Attributname => Label, Attribut Value => Textbox + Inhalt
                             rtx.AppendText("\tAttributname: " + xmlAttributAlpha.Name + "\tValue:" + xmlAttributAlpha.Value + "\n");
 
                         }
@@ -83,6 +82,7 @@ namespace ConfigEditor
                 //Sollte es weitere Childnodes geben, wird die statische Methode nochmal aufgerufen, damit auch diese ChildNodes verarbeitet werden können!
                 if (xmlNodeItemBeta.HasChildNodes)
                 {
+                    //Add /T for first Lvl and 2nd lvl append just a new one /T ?? only for testing, should not be added or done, string + string performance to slow
                     xmlnodes(xmlNodeItemBeta, ref rtx);
                 }
             }

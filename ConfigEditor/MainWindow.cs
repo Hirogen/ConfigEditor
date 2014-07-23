@@ -30,6 +30,7 @@ namespace ConfigEditor
             {
                 if((stream = openFileDialog.OpenFile()) != null)
                 {
+                    richTextBoxLog.Clear();
                     xmlD.getXmlDocucmentFromStream(stream, ref richTextBoxLog);
                 }
             }

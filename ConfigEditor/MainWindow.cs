@@ -23,7 +23,7 @@ namespace ConfigEditor
         {
             System.IO.Stream stream = null;
             openFileDialog = new OpenFileDialog();
-            openFileDialog.Filter = "Dispatcher config Files|*.config";
+            openFileDialog.Filter = "config Files|*.config";
             openFileDialog.FilterIndex = 1;
             openFileDialog.RestoreDirectory = true;
             if(openFileDialog.ShowDialog() == DialogResult.OK)

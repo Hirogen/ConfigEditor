@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using NLog;
 
 namespace ConfigEditor
 {
@@ -14,6 +15,8 @@ namespace ConfigEditor
         [STAThread]
         static void Main()
         {
+            Logger log = LogManager.GetCurrentClassLogger();
+            log.Debug("=== Start ===");
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new MainWindow());

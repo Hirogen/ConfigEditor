@@ -6,12 +6,15 @@ using System.Threading.Tasks;
 using System.Xml;
 using System.IO;
 using System.Windows.Forms;
+using NLog;
 
 namespace ConfigEditor
 {
     class xmlDocument
     {
         private Stream stream = null;
+        static Logger log = LogManager.GetCurrentClassLogger();
+
         public xmlDocument()
         {
 
@@ -34,6 +37,7 @@ namespace ConfigEditor
                     if (xmlNodeItemAlpha.HasChildNodes)
                     {
                         //Console.WriteLine("Anzahl: " + xmlNodeItemAlpha.ChildNodes.Count);
+                        log.Debug("Anzahl: " + xmlNodeItemAlpha.ChildNodes.Count);
                         richTextBoxLog.AppendText("Anzahl: " + xmlNodeItemAlpha.ChildNodes.Count + "\n");
                         richTextBoxLog.AppendText("---------------------------------------------------\n");
                         //initial 
@@ -65,15 +69,18 @@ namespace ConfigEditor
                     //Node Name ausgeben
                     //TODO Generieren des GruppenBereiches
                     rtx.AppendText("---------------------------------------------------\n");
+                    log.Debug("Name:" + xmlNodeItemBeta.Name);
                     rtx.AppendText("Name:" + xmlNodeItemBeta.Name + "\n");
                     if (xmlNodeItemBeta.Attributes != null && xmlNodeItemBeta.Attributes.Count > 0)
                     {
                         xmlac = xmlNodeItemBeta.Attributes;
+                        log.Debug("\nAnzahl Attribute: " + xmlNodeItemBeta.Attributes.Count);
                         rtx.AppendText("\nAnzahl Attribute: " + xmlNodeItemBeta.Attributes.Count + "\n");
                         foreach (XmlAttribute xmlAttributAlpha in xmlac)
                         {
                             //Attribut zeugs ausgeben
                             //TODO Attributname => Label, Attribut Value => Textbox + Inhalt
+                            log.Debug("\tAttributname: " + xmlAttributAlpha.Name + "\tValue:" + xmlAttributAlpha.Value);
                             rtx.AppendText("\tAttributname: " + xmlAttributAlpha.Name + "\tValue:" + xmlAttributAlpha.Value + "\n");
 
                         }

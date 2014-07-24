@@ -7,14 +7,17 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using NLog;
 
 namespace ConfigEditor
 {
     public partial class MainWindow : Form
     {
+        Logger log = LogManager.GetCurrentClassLogger();
         xmlDocument xmlD;
         public MainWindow()
         {
+            log.Debug("Initailize MainWindow");
             InitializeComponent();
             xmlD = new xmlDocument();
         }
@@ -30,6 +33,7 @@ namespace ConfigEditor
             {
                 if((stream = openFileDialog.OpenFile()) != null)
                 {
+                    log.Debug("Reading xml Dokument");
                     richTextBoxLog.Clear();
                     xmlD.getXmlDocucmentFromStream(stream, ref richTextBoxLog);
                 }

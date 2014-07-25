@@ -10,7 +10,7 @@ using NLog;
 
 namespace ConfigEditor
 {
-    class xmlDocument
+    public class xmlDocument
     {
         private Stream stream = null;
         static Logger log = LogManager.GetCurrentClassLogger();
@@ -26,7 +26,9 @@ namespace ConfigEditor
              set { stream = value; }
         }
 
-        public void getXmlDocucmentFromStream(Stream stream, ref RichTextBox richTextBoxLog)
+        //TODO Should return xmlDocument for further editing
+        //TODO For testing purpose added ref to textboxes and lables
+        public void getXmlDocucmentFromStream(Stream stream, ref List<KeyValuePair<Label, TextBox>> attributesAndValues)
         {
             XmlDocument xmldoc = new XmlDocument();
             try
@@ -38,28 +40,24 @@ namespace ConfigEditor
                     {
                         //Console.WriteLine("Anzahl: " + xmlNodeItemAlpha.ChildNodes.Count);
                         log.Debug("Anzahl: " + xmlNodeItemAlpha.ChildNodes.Count);
-                        richTextBoxLog.AppendText("Anzahl: " + xmlNodeItemAlpha.ChildNodes.Count + "\n");
-                        richTextBoxLog.AppendText("---------------------------------------------------\n");
+                        //richTextBoxLog.AppendText("Anzahl: " + xmlNodeItemAlpha.ChildNodes.Count + "\n");
+                        //richTextBoxLog.AppendText("---------------------------------------------------\n");
                         //initial 
-                        xmlnodes(xmlNodeItemAlpha, ref richTextBoxLog);
+                        xmlnodes(xmlNodeItemAlpha, ref attributesAndValues);
                     }
                 }
-                //Console.ReadKey();
             }
             catch (Exception e)
             {
-
-                richTextBoxLog.AppendText(e.ToString());
-                //Console.ReadKey();
+                log.Error("=== XML Document could'nt be read", e);
             }
         }
-         
-         //
-         //   
 
-        private static void xmlnodes(XmlNode xmlNodeItemAlpha, ref RichTextBox rtx)
+        //TODO Better workflow, for xmlNode Reading
+        private static void xmlnodes(XmlNode xmlNodeItemAlpha, ref List<KeyValuePair<Label, TextBox>> attributesAndValues)
         {
             XmlAttributeCollection xmlac;
+            KeyValuePair<Label, TextBox> kvp;
             //XmlNode xmln;
             foreach (XmlNode xmlNodeItemBeta in xmlNodeItemAlpha)
             {
@@ -68,20 +66,27 @@ namespace ConfigEditor
                 {
                     //Node Name ausgeben
                     //TODO Generieren des GruppenBereiches
-                    rtx.AppendText("---------------------------------------------------\n");
+                    //rtx.AppendText("---------------------------------------------------\n");
                     log.Debug("Name:" + xmlNodeItemBeta.Name);
-                    rtx.AppendText("Name:" + xmlNodeItemBeta.Name + "\n");
+                    //rtx.AppendText("Name:" + xmlNodeItemBeta.Name + "\n");
                     if (xmlNodeItemBeta.Attributes != null && xmlNodeItemBeta.Attributes.Count > 0)
                     {
                         xmlac = xmlNodeItemBeta.Attributes;
                         log.Debug("\nAnzahl Attribute: " + xmlNodeItemBeta.Attributes.Count);
-                        rtx.AppendText("\nAnzahl Attribute: " + xmlNodeItemBeta.Attributes.Count + "\n");
+                        //rtx.AppendText("\nAnzahl Attribute: " + xmlNodeItemBeta.Attributes.Count + "\n");
                         foreach (XmlAttribute xmlAttributAlpha in xmlac)
                         {
+                            Label tempLabel = new Label();
+                            tempLabel.Text = xmlAttributAlpha.Name;
+                            TextBox tempTextBox = new TextBox();
+                            tempTextBox.Text = xmlAttributAlpha.Value;
+
+                            kvp = new KeyValuePair<Label, TextBox>(tempLabel, tempTextBox);
                             //Attribut zeugs ausgeben
                             //TODO Attributname => Label, Attribut Value => Textbox + Inhalt
                             log.Debug("\tAttributname: " + xmlAttributAlpha.Name + "\tValue:" + xmlAttributAlpha.Value);
-                            rtx.AppendText("\tAttributname: " + xmlAttributAlpha.Name + "\tValue:" + xmlAttributAlpha.Value + "\n");
+                            attributesAndValues.Add(kvp);
+                            //rtx.AppendText("\tAttributname: " + xmlAttributAlpha.Name + "\tValue:" + xmlAttributAlpha.Value + "\n");
 
                         }
                     }
@@ -90,7 +95,7 @@ namespace ConfigEditor
                 if (xmlNodeItemBeta.HasChildNodes)
                 {
                     //Add /T for first Lvl and 2nd lvl append just a new one /T ?? only for testing, should not be added or done, string + string performance to slow
-                    xmlnodes(xmlNodeItemBeta, ref rtx);
+                    xmlnodes(xmlNodeItemBeta, ref attributesAndValues);
                 }
             }
         }

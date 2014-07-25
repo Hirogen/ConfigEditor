@@ -16,7 +16,7 @@ namespace ConfigEditor
         static void Main()
         {
             Logger log = LogManager.GetCurrentClassLogger();
-            log.Debug("=== Start ===");
+            log.Debug("============ Start of the ConfigEditor-Applikation ============");
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new MainWindow());

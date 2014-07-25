@@ -13,6 +13,7 @@ namespace ConfigEditor
 {
     public partial class MainWindow : Form
     {
+        List<KeyValuePair<Label, TextBox>> attributesAndValues = new List<KeyValuePair<Label,TextBox>>();
         Logger log = LogManager.GetCurrentClassLogger();
         xmlDocument xmlD;
         public MainWindow()
@@ -33,9 +34,17 @@ namespace ConfigEditor
             {
                 if((stream = openFileDialog.OpenFile()) != null)
                 {
-                    log.Debug("Reading xml Dokument");
-                    richTextBoxLog.Clear();
-                    xmlD.getXmlDocucmentFromStream(stream, ref richTextBoxLog);
+                    log.Debug("<== Reading xml Dokument");
+                    xmlD.getXmlDocucmentFromStream(stream, ref attributesAndValues);
+                    log.Debug("<== Adding Labels and Textboxes:");
+                    foreach (KeyValuePair <Label, TextBox> attributes in attributesAndValues)
+                    {
+                        this.flowLayoutPanel.Controls.Add(attributes.Key);
+                        log.Trace("<== adding Label: ", attributes.Key);
+                        this.flowLayoutPanel.Controls.Add(attributes.Value);
+                        log.Trace("<== adding TextBox: ", attributes.Value);
+                    }
+                    this.flowLayoutPanel.Update();
                 }
             }
         }

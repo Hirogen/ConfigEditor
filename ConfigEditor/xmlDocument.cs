@@ -10,30 +10,41 @@ using NLog;
 
 namespace ConfigEditor
 {
-    public class xmlDocument
+    public class XMLDocument
     {
-        private Stream stream = null;
+        private Stream xmlPath;
         static Logger log = LogManager.GetCurrentClassLogger();
+        private List<KeyValuePair<Label, TextBox>> attributesAndValues;
 
-        public xmlDocument()
-        {
+        /// <summary>
+        /// Entrypoint
+        /// </summary>
+        /// <param name="stream">XML Filename</param>
+        public XMLDocument(Stream stream)
+        {   
+            xmlPath = stream;
+            attributesAndValues = new List<KeyValuePair<Label, TextBox>>();
+            getXmlDocucmentFromStream();
 
         }
 
-        public Stream xmlPfad
+        public List<KeyValuePair<Label, TextBox>> AttributesAndValues
+        { get { return attributesAndValues; } }
+
+        private Stream XMLPath
         {
-             get { return stream; }
-             set { stream = value; }
+             get { return xmlPath; }
+             set { xmlPath = value; }
         }
 
         //TODO Should return xmlDocument for further editing
         //TODO For testing purpose added ref to textboxes and lables
-        public void getXmlDocucmentFromStream(Stream stream, ref List<KeyValuePair<Label, TextBox>> attributesAndValues)
+        private void getXmlDocucmentFromStream()
         {
             XmlDocument xmldoc = new XmlDocument();
             try
             {
-                xmldoc.Load(stream);
+                xmldoc.Load(XMLPath);
                 foreach (XmlNode xmlNodeItemAlpha in xmldoc)
                 {
                     if (xmlNodeItemAlpha.HasChildNodes)
@@ -43,7 +54,7 @@ namespace ConfigEditor
                         //richTextBoxLog.AppendText("Anzahl: " + xmlNodeItemAlpha.ChildNodes.Count + "\n");
                         //richTextBoxLog.AppendText("---------------------------------------------------\n");
                         //initial 
-                        xmlnodes(xmlNodeItemAlpha, ref attributesAndValues);
+                        xmlnodes(xmlNodeItemAlpha);
                     }
                 }
             }
@@ -54,7 +65,7 @@ namespace ConfigEditor
         }
 
         //TODO Better workflow, for xmlNode Reading
-        private static void xmlnodes(XmlNode xmlNodeItemAlpha, ref List<KeyValuePair<Label, TextBox>> attributesAndValues)
+        private void xmlnodes(XmlNode xmlNodeItemAlpha)
         {
             XmlAttributeCollection xmlac;
             KeyValuePair<Label, TextBox> kvp;
@@ -95,7 +106,7 @@ namespace ConfigEditor
                 if (xmlNodeItemBeta.HasChildNodes)
                 {
                     //Add /T for first Lvl and 2nd lvl append just a new one /T ?? only for testing, should not be added or done, string + string performance to slow
-                    xmlnodes(xmlNodeItemBeta, ref attributesAndValues);
+                    xmlnodes(xmlNodeItemBeta);
                 }
             }
         }

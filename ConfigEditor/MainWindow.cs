@@ -15,12 +15,11 @@ namespace ConfigEditor
     {
         List<KeyValuePair<Label, TextBox>> attributesAndValues = new List<KeyValuePair<Label,TextBox>>();
         Logger log = LogManager.GetCurrentClassLogger();
-        xmlDocument xmlD;
+        XMLDocument xmlD;
         public MainWindow()
         {
             log.Debug("Initailize MainWindow");
             InitializeComponent();
-            xmlD = new xmlDocument();
         }
 
         private void öffnenToolStripMenuItem_Click(object sender, EventArgs e)
@@ -35,14 +34,15 @@ namespace ConfigEditor
                 if((stream = openFileDialog.OpenFile()) != null)
                 {
                     log.Debug("<== Reading xml Dokument");
-                    xmlD.getXmlDocucmentFromStream(stream, ref attributesAndValues);
+                    xmlD = new XMLDocument(stream);
+                    attributesAndValues = xmlD.AttributesAndValues;
                     log.Debug("<== Adding Labels and Textboxes:");
                     foreach (KeyValuePair <Label, TextBox> attributes in attributesAndValues)
                     {
                         this.flowLayoutPanel.Controls.Add(attributes.Key);
-                        log.Trace("<== adding Label: ", attributes.Key);
+                        log.Trace("<== adding Label: ", attributes.Key.Text);
                         this.flowLayoutPanel.Controls.Add(attributes.Value);
-                        log.Trace("<== adding TextBox: ", attributes.Value);
+                        log.Trace("<== adding TextBox: ", attributes.Value.Text);
                     }
                     this.flowLayoutPanel.Update();
                 }

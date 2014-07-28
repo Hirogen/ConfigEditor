@@ -60,7 +60,7 @@ namespace ConfigEditor
             }
             catch (Exception e)
             {
-                log.Error("=== XML Document could'nt be read", e);
+                log.Error("=== XML Document couldn't be read", e);
             }
         }
 

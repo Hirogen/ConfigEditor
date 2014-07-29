@@ -13,6 +13,8 @@ namespace ConfigEditor
     public class XMLDocument
     {
         private Stream xmlPath;
+        private TreeView xmlDocumentAsTreeView = null;
+        private TreeNode xmlNodeAsTreeNode = null;
         static Logger log = LogManager.GetCurrentClassLogger();
         private List<KeyValuePair<Label, TextBox>> attributesAndValues;
 
@@ -22,6 +24,8 @@ namespace ConfigEditor
         /// <param name="stream">XML Filename</param>
         public XMLDocument(Stream stream)
         {   
+            //treeview and treenode test
+            xmlDocumentAsTreeView = new TreeView();
             xmlPath = stream;
             attributesAndValues = new List<KeyValuePair<Label, TextBox>>();
             getXmlDocucmentFromStream();
@@ -37,6 +41,15 @@ namespace ConfigEditor
              set { xmlPath = value; }
         }
 
+        private TreeNode XMLNodeAsTreeNode 
+        { 
+            get { return xmlNodeAsTreeNode; }
+            set { xmlNodeAsTreeNode = value; }
+        }
+
+        public TreeView XMLDocumentAsTreeView
+        { get { return xmlDocumentAsTreeView; } }
+
         //TODO Should return xmlDocument for further editing
         //TODO For testing purpose added ref to textboxes and lables
         private void getXmlDocucmentFromStream()
@@ -45,16 +58,15 @@ namespace ConfigEditor
             try
             {
                 xmldoc.Load(XMLPath);
-                foreach (XmlNode xmlNodeItemAlpha in xmldoc)
+                foreach (XmlNode xmlNodeItem in xmldoc)
                 {
-                    if (xmlNodeItemAlpha.HasChildNodes)
+                    if (xmlNodeItem.HasChildNodes)
                     {
-                        //Console.WriteLine("Anzahl: " + xmlNodeItemAlpha.ChildNodes.Count);
-                        log.Debug("Anzahl: " + xmlNodeItemAlpha.ChildNodes.Count);
-                        //richTextBoxLog.AppendText("Anzahl: " + xmlNodeItemAlpha.ChildNodes.Count + "\n");
-                        //richTextBoxLog.AppendText("---------------------------------------------------\n");
+                        log.Debug("Anzahl: " + xmlNodeItem.ChildNodes.Count);
+                        //BUG: First XML Node is being ignored
                         //initial 
-                        xmlnodes(xmlNodeItemAlpha);
+                        exctractAttributesAndValuesFromXmlNode(xmlNodeItem);
+                        xmlnodes(xmlNodeItem);
                     }
                 }
             }
@@ -65,48 +77,51 @@ namespace ConfigEditor
         }
 
         //TODO Better workflow, for xmlNode Reading
-        private void xmlnodes(XmlNode xmlNodeItemAlpha)
+        private void xmlnodes(XmlNode xmlNodeList)
         {
-            XmlAttributeCollection xmlac;
-            KeyValuePair<Label, TextBox> kvp;
-            //XmlNode xmln;
-            foreach (XmlNode xmlNodeItemBeta in xmlNodeItemAlpha)
+            foreach (XmlNode xmlNodeItem in xmlNodeList)
             {
                 //TODO XML-comments are needed later on, need to read them when writing stuff back to the xml
-                if (!(xmlNodeItemBeta.NodeType == XmlNodeType.Comment))
+                if (!(xmlNodeItem.NodeType == XmlNodeType.Comment))
                 {
                     //Node Name ausgeben
                     //TODO Generieren des GruppenBereiches
-                    //rtx.AppendText("---------------------------------------------------\n");
-                    log.Debug("Name:" + xmlNodeItemBeta.Name);
-                    //rtx.AppendText("Name:" + xmlNodeItemBeta.Name + "\n");
-                    if (xmlNodeItemBeta.Attributes != null && xmlNodeItemBeta.Attributes.Count > 0)
-                    {
-                        xmlac = xmlNodeItemBeta.Attributes;
-                        log.Debug("\nAnzahl Attribute: " + xmlNodeItemBeta.Attributes.Count);
-                        //rtx.AppendText("\nAnzahl Attribute: " + xmlNodeItemBeta.Attributes.Count + "\n");
-                        foreach (XmlAttribute xmlAttributAlpha in xmlac)
-                        {
-                            Label tempLabel = new Label();
-                            tempLabel.Text = xmlAttributAlpha.Name;
-                            TextBox tempTextBox = new TextBox();
-                            tempTextBox.Text = xmlAttributAlpha.Value;
-
-                            kvp = new KeyValuePair<Label, TextBox>(tempLabel, tempTextBox);
-                            //Attribut zeugs ausgeben
-                            //TODO Attributname => Label, Attribut Value => Textbox + Inhalt
-                            log.Debug("\tAttributname: " + xmlAttributAlpha.Name + "\tValue:" + xmlAttributAlpha.Value);
-                            attributesAndValues.Add(kvp);
-                            //rtx.AppendText("\tAttributname: " + xmlAttributAlpha.Name + "\tValue:" + xmlAttributAlpha.Value + "\n");
-
-                        }
-                    }
+                    log.Debug("Name:" + xmlNodeItem.Name);
+                    exctractAttributesAndValuesFromXmlNode(xmlNodeItem);
                 }
                 //Sollte es weitere Childnodes geben, wird die statische Methode nochmal aufgerufen, damit auch diese ChildNodes verarbeitet werden können!
-                if (xmlNodeItemBeta.HasChildNodes)
+                if (xmlNodeItem.HasChildNodes)
                 {
-                    //Add /T for first Lvl and 2nd lvl append just a new one /T ?? only for testing, should not be added or done, string + string performance to slow
-                    xmlnodes(xmlNodeItemBeta);
+                    xmlnodes(xmlNodeItem);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Extracts Attributes from a given XmlNode Object and adds it as KeyValuePair to the KeyValuePair-List
+        /// </summary>
+        /// <param name="xmlNodeItem"></param>
+        private void exctractAttributesAndValuesFromXmlNode(XmlNode xmlNodeItem)
+        {
+            XmlAttributeCollection xmlac;
+            KeyValuePair<Label, TextBox> kvp;
+            if (xmlNodeItem.Attributes != null && xmlNodeItem.Attributes.Count > 0)
+            {
+                xmlNodeAsTreeNode = new TreeNode(xmlNodeItem.Name);
+                xmlac = xmlNodeItem.Attributes;
+                log.Debug("\nAnzahl Attribute: " + xmlNodeItem.Attributes.Count);
+                foreach (XmlAttribute xmlAttributAlpha in xmlac)
+                {
+                    Label tempLabel = new Label();
+                    tempLabel.Text = xmlAttributAlpha.Name;
+                    TextBox tempTextBox = new TextBox();
+                    tempTextBox.Text = xmlAttributAlpha.Value;
+
+                    kvp = new KeyValuePair<Label, TextBox>(tempLabel, tempTextBox);
+                    //Attribut zeugs ausgeben
+                    //TODO Attributname => Label, Attribut Value => Textbox + Inhalt
+                    log.Debug("\tAttributname: " + xmlAttributAlpha.Name + "\tValue:" + xmlAttributAlpha.Value);
+                    attributesAndValues.Add(kvp);
                 }
             }
         }

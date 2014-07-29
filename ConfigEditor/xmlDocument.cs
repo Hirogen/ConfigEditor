@@ -28,7 +28,7 @@ namespace ConfigEditor
             xmlDocumentAsTreeView = new TreeView();
             xmlPath = stream;
             attributesAndValues = new List<KeyValuePair<Label, TextBox>>();
-            getXmlDocucmentFromStream();
+            GetXmlDocucmentFromStream();
 
         }
 
@@ -52,7 +52,7 @@ namespace ConfigEditor
 
         //TODO Should return xmlDocument for further editing
         //TODO For testing purpose added ref to textboxes and lables
-        private void getXmlDocucmentFromStream()
+        private void GetXmlDocucmentFromStream()
         {
             XmlDocument xmldoc = new XmlDocument();
             try
@@ -65,8 +65,8 @@ namespace ConfigEditor
                         log.Debug("Anzahl: " + xmlNodeItem.ChildNodes.Count);
                         //BUG: First XML Node is being ignored
                         //initial 
-                        exctractAttributesAndValuesFromXmlNode(xmlNodeItem);
-                        xmlnodes(xmlNodeItem);
+                        ExtractAttributesAndValuesFromXMLNode(xmlNodeItem);
+                        XMLNodes(xmlNodeItem);
                     }
                 }
             }
@@ -77,7 +77,7 @@ namespace ConfigEditor
         }
 
         //TODO Better workflow, for xmlNode Reading
-        private void xmlnodes(XmlNode xmlNodeList)
+        private void XMLNodes(XmlNode xmlNodeList)
         {
             foreach (XmlNode xmlNodeItem in xmlNodeList)
             {
@@ -87,12 +87,12 @@ namespace ConfigEditor
                     //Node Name ausgeben
                     //TODO Generieren des GruppenBereiches
                     log.Debug("Name:" + xmlNodeItem.Name);
-                    exctractAttributesAndValuesFromXmlNode(xmlNodeItem);
+                    ExtractAttributesAndValuesFromXMLNode(xmlNodeItem);
                 }
                 //Sollte es weitere Childnodes geben, wird die statische Methode nochmal aufgerufen, damit auch diese ChildNodes verarbeitet werden können!
                 if (xmlNodeItem.HasChildNodes)
                 {
-                    xmlnodes(xmlNodeItem);
+                    XMLNodes(xmlNodeItem);
                 }
             }
         }
@@ -101,7 +101,7 @@ namespace ConfigEditor
         /// Extracts Attributes from a given XmlNode Object and adds it as KeyValuePair to the KeyValuePair-List
         /// </summary>
         /// <param name="xmlNodeItem"></param>
-        private void exctractAttributesAndValuesFromXmlNode(XmlNode xmlNodeItem)
+        private void ExtractAttributesAndValuesFromXMLNode(XmlNode xmlNodeItem)
         {
             XmlAttributeCollection xmlac;
             KeyValuePair<Label, TextBox> kvp;

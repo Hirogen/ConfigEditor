@@ -84,12 +84,12 @@ namespace ConfigEditor
                 //TODO XML-comments are needed later on, need to read them when writing stuff back to the xml
                 if (!(xmlNodeItem.NodeType == XmlNodeType.Comment))
                 {
-                    //Node Name ausgeben
+                    //log Node Name
                     //TODO Generieren des GruppenBereiches
                     log.Debug("Name:" + xmlNodeItem.Name);
                     ExtractAttributesAndValuesFromXMLNode(xmlNodeItem);
                 }
-                //Sollte es weitere Childnodes geben, wird die statische Methode nochmal aufgerufen, damit auch diese ChildNodes verarbeitet werden können!
+                //Are there any other Childnodes, if yes, well just use the same method again, problematic for big xml files? memory leak?
                 if (xmlNodeItem.HasChildNodes)
                 {
                     XMLNodes(xmlNodeItem);
@@ -109,16 +109,19 @@ namespace ConfigEditor
             {
                 xmlNodeAsTreeNode = new TreeNode(xmlNodeItem.Name);
                 xmlac = xmlNodeItem.Attributes;
-                log.Debug("\nAnzahl Attribute: " + xmlNodeItem.Attributes.Count);
+                log.Debug("\nAttribute Count: " + xmlNodeItem.Attributes.Count);
                 foreach (XmlAttribute xmlAttributAlpha in xmlac)
                 {
                     Label tempLabel = new Label();
+                    log.Trace("Creating Label");
                     tempLabel.Text = xmlAttributAlpha.Name;
                     TextBox tempTextBox = new TextBox();
+                    log.Trace("Creating Textbox");
                     tempTextBox.Text = xmlAttributAlpha.Value;
+                    log.Trace("Adding Text Value to textbox");
 
                     kvp = new KeyValuePair<Label, TextBox>(tempLabel, tempTextBox);
-                    //Attribut zeugs ausgeben
+                    //attribute loggin
                     //TODO Attributname => Label, Attribut Value => Textbox + Inhalt
                     log.Debug("\tAttributname: " + xmlAttributAlpha.Name + "\tValue:" + xmlAttributAlpha.Value);
                     attributesAndValues.Add(kvp);

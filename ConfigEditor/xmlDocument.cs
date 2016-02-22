@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Xml;
 using System.IO;
 using System.Windows.Forms;
@@ -10,45 +7,41 @@ using NLog;
 
 namespace ConfigEditor
 {
+    [System.Runtime.InteropServices.Guid("7FAD38C1-D8A0-4EA8-A9A9-C77D44704230")]
     public class XMLDocument
     {
-        private Stream xmlPath;
-        private TreeView xmlDocumentAsTreeView = null;
-        private TreeNode xmlNodeAsTreeNode = null;
+        private TreeNode _xmlNodeAsTreeNode = null;
+        private TreeView _xmlDocumentAsTreeView = null;
         static Logger log = LogManager.GetCurrentClassLogger();
-        private List<KeyValuePair<Label, TextBox>> attributesAndValues;
+        private List<KeyValuePair<Label, TextBox>> _attributesAndValues;
+        private Stream stream;
 
         /// <summary>
         /// Entrypoint
         /// </summary>
         /// <param name="stream">XML Filename</param>
         public XMLDocument(Stream stream)
-        {   
+        {
             //treeview and treenode test
-            xmlDocumentAsTreeView = new TreeView();
-            xmlPath = stream;
-            attributesAndValues = new List<KeyValuePair<Label, TextBox>>();
+            _xmlDocumentAsTreeView = new TreeView();
+            XmlPath = stream;
+            _attributesAndValues = new List<KeyValuePair<Label, TextBox>>();
             GetXmlDocucmentFromStream();
 
         }
 
         public List<KeyValuePair<Label, TextBox>> AttributesAndValues
-        { get { return attributesAndValues; } }
+        { get { return _attributesAndValues; } }
 
-        private Stream XMLPath
-        {
-             get { return xmlPath; }
-             set { xmlPath = value; }
-        }
+        private Stream XmlPath { get; set; }
 
         private TreeNode XMLNodeAsTreeNode 
         { 
-            get { return xmlNodeAsTreeNode; }
-            set { xmlNodeAsTreeNode = value; }
+            get { return _xmlNodeAsTreeNode; }
+            set { _xmlNodeAsTreeNode = value; }
         }
 
-        public TreeView XMLDocumentAsTreeView
-        { get { return xmlDocumentAsTreeView; } }
+        public TreeView XmlDocumentAsTreeView { get; } = null;
 
         //TODO Should return xmlDocument for further editing
         //TODO For testing purpose added ref to textboxes and lables
@@ -57,7 +50,8 @@ namespace ConfigEditor
             XmlDocument xmldoc = new XmlDocument();
             try
             {
-                xmldoc.Load(XMLPath);
+                //Loading XML Document
+                xmldoc.Load(XmlPath);
                 foreach (XmlNode xmlNodeItem in xmldoc)
                 {
                     if (xmlNodeItem.HasChildNodes)
@@ -65,8 +59,8 @@ namespace ConfigEditor
                         log.Debug("Anzahl: " + xmlNodeItem.ChildNodes.Count);
                         //BUG: First XML Node is being ignored
                         //initial 
-                        ExtractAttributesAndValuesFromXMLNode(xmlNodeItem);
-                        XMLNodes(xmlNodeItem);
+                        ExtractAttributesAndValuesFromXmlNode(xmlNodeItem);
+                        XmlNodes(xmlNodeItem);
                     }
                 }
             }
@@ -77,7 +71,7 @@ namespace ConfigEditor
         }
 
         //TODO Better workflow, for xmlNode Reading
-        private void XMLNodes(XmlNode xmlNodeList)
+        private void XmlNodes(XmlNode xmlNodeList)
         {
             foreach (XmlNode xmlNodeItem in xmlNodeList)
             {
@@ -87,12 +81,12 @@ namespace ConfigEditor
                     //log Node Name
                     //TODO Generieren des GruppenBereiches
                     log.Debug("Name:" + xmlNodeItem.Name);
-                    ExtractAttributesAndValuesFromXMLNode(xmlNodeItem);
+                    ExtractAttributesAndValuesFromXmlNode(xmlNodeItem);
                 }
                 //Are there any other Childnodes, if yes, well just use the same method again, problematic for big xml files? memory leak?
                 if (xmlNodeItem.HasChildNodes)
                 {
-                    XMLNodes(xmlNodeItem);
+                    XmlNodes(xmlNodeItem);
                 }
             }
         }
@@ -101,14 +95,15 @@ namespace ConfigEditor
         /// Extracts Attributes from a given XmlNode Object and adds it as KeyValuePair to the KeyValuePair-List
         /// </summary>
         /// <param name="xmlNodeItem"></param>
-        private void ExtractAttributesAndValuesFromXMLNode(XmlNode xmlNodeItem)
+        private void ExtractAttributesAndValuesFromXmlNode(XmlNode xmlNodeItem)
         {
-            XmlAttributeCollection xmlac;
-            KeyValuePair<Label, TextBox> kvp;
+            
+            
             if (xmlNodeItem.Attributes != null && xmlNodeItem.Attributes.Count > 0)
             {
-                xmlNodeAsTreeNode = new TreeNode(xmlNodeItem.Name);
-                xmlac = xmlNodeItem.Attributes;
+                
+                _xmlNodeAsTreeNode = new TreeNode(xmlNodeItem.Name);
+                XmlAttributeCollection xmlac = xmlNodeItem.Attributes;
                 log.Debug("\nAttribute Count: " + xmlNodeItem.Attributes.Count);
                 foreach (XmlAttribute xmlAttributAlpha in xmlac)
                 {
@@ -120,11 +115,11 @@ namespace ConfigEditor
                     tempTextBox.Text = xmlAttributAlpha.Value;
                     log.Trace("Adding Text Value to textbox");
 
-                    kvp = new KeyValuePair<Label, TextBox>(tempLabel, tempTextBox);
+                    KeyValuePair<Label, TextBox> kvp = new KeyValuePair<Label, TextBox>(tempLabel, tempTextBox);
                     //attribute loggin
                     //TODO Attributname => Label, Attribut Value => Textbox + Inhalt
                     log.Debug("\tAttributname: " + xmlAttributAlpha.Name + "\tValue:" + xmlAttributAlpha.Value);
-                    attributesAndValues.Add(kvp);
+                    _attributesAndValues.Add(kvp);
                 }
             }
         }

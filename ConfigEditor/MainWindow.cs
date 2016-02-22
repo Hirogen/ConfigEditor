@@ -1,11 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using NLog;
 
@@ -13,9 +7,9 @@ namespace ConfigEditor
 {
     public partial class MainWindow : Form
     {
-        List<KeyValuePair<Label, TextBox>> attributesAndValues = new List<KeyValuePair<Label,TextBox>>();
+        List<KeyValuePair<Label, TextBox>> _attributesAndValues = new List<KeyValuePair<Label,TextBox>>();
         Logger log = LogManager.GetCurrentClassLogger();
-        XMLDocument xmlD;
+        private XMLDocument _xmlD;
         public MainWindow()
         {
             log.Debug("Initailize MainWindow");
@@ -31,13 +25,14 @@ namespace ConfigEditor
             openFileDialog.RestoreDirectory = true;
             if(openFileDialog.ShowDialog() == DialogResult.OK)
             {
-                if((stream = openFileDialog.OpenFile()) != null)
+
+                if((stream = openFileDialog.OpenFile())!= null)
                 {
                     log.Debug("<== Reading xml Dokument");
-                    xmlD = new XMLDocument(stream);
-                    attributesAndValues = xmlD.AttributesAndValues;
+                    _xmlD = new XMLDocument(stream);
+                    _attributesAndValues = _xmlD.AttributesAndValues;
                     log.Debug("<== Adding Labels and Textboxes:");
-                    foreach (KeyValuePair <Label, TextBox> attributes in attributesAndValues)
+                    foreach (KeyValuePair <Label, TextBox> attributes in _attributesAndValues)
                     {
                         this.flowLayoutPanel.Controls.Add(attributes.Key);
                         log.Trace("<== adding Label: ", attributes.Key.Text);
